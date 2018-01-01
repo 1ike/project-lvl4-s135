@@ -1,0 +1,56 @@
+{
+  "name": "project-lvl3-s134",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "bin": {
+    "page-loader": "dist/bin/page-loader.js"
+  },
+  "dependencies": {
+    "axios": "*",
+    "cheerio": "*",
+    "commander": "*",
+    "listr": "*",
+    "debug": "*",
+    "mz": "*",
+    "rimraf": "*"
+  },
+  "devDependencies": {
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-eslint": "*",
+    "babel-jest": "*",
+    "babel-preset-env": "*",
+    "babel-preset-stage-0": "*",
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-import": "*",
+    "eslint-plugin-jest": "*",
+    "jest": "*",
+    "jest-cli": "*",
+    "nock": "*"
+  },
+  "scripts": {
+    "babel-node": "babel-node",
+    "build": "NODE_ENV=production && babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint:init": "eslint --init",
+    "eslint": "eslint",
+    "test": "jest --coverage",
+    "test-watch": "jest --no-cache --watchAll"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/__tests__/__fixtures__/"
+    ],
+    "watchPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/ru-hexlet-io-courses_files/",
+      "<rootDir>/dist/"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Saving page for offline using."
+}
