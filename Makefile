@@ -1,32 +1,50 @@
-install:
-	npm i
+all: compose-setup
+
+prepare:
+	touch .bash_history
+	touch .env
+
+compose:
+	docker-compose up
+
+compose-install:
+	docker-compose run web yarn
+
+compose-setup: prepare compose-build compose-install compose-db-setup
+	npm run flow-typed install
+
+compose-db-setup:
+	docker-compose run web npm run sequelize db:migrate
+
+compose-kill:
+	docker-compose kill
+
+compose-build:
+	docker-compose build
+
+compose-test:
+	docker-compose run web make test
+
+compose-bash:
+	docker-compose run web bash
+
+compose-console:
+	docker-compose-npm run gulp console
+
+compose-lint:
+	docker-compose run web npm run eslint
 
 start:
-	npm run babel-node -- src/bin/page-loader.js https://ru.hexlet.io/courses
+	DEBUG="application:*" npm run nodemon -- --watch .  --ext '.js' --exec npm run gulp -- server
 
-d:
-	npm run babel-node -- --inspect-brk src/bin/page-loader.js https://ru.hexlet.io/courses
+compose-check-types:
+	docker-compose run web npm run flow
 
-debug:
-	DEBUG="page-loader:*" npm run babel-node --  src/bin/page-loader.js http://ya.ru
+compose-dist-build:
+	rm -rf dist
+	docker-compose run web npm run build
 
-build: lint
-	npm run build
+compose-publish: compose-dist-build
+	docker-compose run web npm publish
 
-b:
-	npm run build
-
-lint:
-	npm run eslint src
-
-fix:
-	npm run eslint --fix src
-
-test:
-	npm run test
-
-t:
-	npm run test-watch
-
-publish:
-	npm publish
+.PHONY: test

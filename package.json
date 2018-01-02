@@ -1,56 +1,88 @@
 {
-  "name": "project-lvl3-s134",
+  "name": "koa-nodejs-application",
   "version": "0.0.1",
+  "description": "",
   "main": "dist/index.js",
   "bin": {
-    "page-loader": "dist/bin/page-loader.js"
+    "hexlet": "dist/bin/hexlet.js"
   },
-  "dependencies": {
-    "axios": "*",
-    "cheerio": "*",
-    "commander": "*",
-    "listr": "*",
-    "debug": "*",
-    "mz": "*",
-    "rimraf": "*"
-  },
-  "devDependencies": {
-    "babel-cli": "*",
-    "babel-core": "*",
-    "babel-eslint": "*",
-    "babel-jest": "*",
-    "babel-preset-env": "*",
-    "babel-preset-stage-0": "*",
-    "eslint": "*",
-    "eslint-config-airbnb-base": "*",
-    "eslint-plugin-import": "*",
-    "eslint-plugin-jest": "*",
-    "jest": "*",
-    "jest-cli": "*",
-    "nock": "*"
-  },
-  "scripts": {
-    "babel-node": "babel-node",
-    "build": "NODE_ENV=production && babel src --out-dir dist --source-maps inline",
-    "prepublishOnly": "npm run build",
-    "eslint:init": "eslint --init",
-    "eslint": "eslint",
-    "test": "jest --coverage",
-    "test-watch": "jest --no-cache --watchAll"
+  "engines": {
+    "node": "8"
   },
   "jest": {
-    "testEnvironment": "node",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/__tests__/__fixtures__/"
-    ],
-    "watchPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/ru-hexlet-io-courses_files/",
-      "<rootDir>/dist/"
-    ]
+    "testEnvironment": "node"
   },
-  "keywords": [],
-  "author": "",
+  "scripts": {
+    "gulp": "gulp",
+    "sequelize": "sequelize",
+    "nodemon": "nodemon",
+    "test": "jest",
+    "babel-node": "babel-node",
+    "flow": "flow",
+    "flow-typed": "flow-typed",
+    "start": "gulp server",
+    "eslint": "eslint",
+    "webpack": "webpack",
+    "build": "npm run webpack -- -p --env production && babel src --out-dir dist --source-maps inline",
+    "postinstall": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hexlet-boilerplates/nodejs-package.git"
+  },
+  "author": "Kirill Mokevnin",
   "license": "ISC",
-  "description": "Saving page for offline using."
+  "bugs": {
+    "url": "https://github.com/hexlet-boilerplates/nodejs-package/issues"
+  },
+  "homepage": "https://github.com/hexlet-boilerplates/nodejs-package#readme",
+  "dependencies": {
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-loader": "*",
+    "babel-polyfill": "*",
+    "babel-preset-env": "*",
+    "babel-preset-flow": "*",
+    "babel-preset-stage-0": "*",
+    "bootstrap": "4.0.0-beta",
+    "popper.js": "*",
+    "css-loader": "*",
+    "debug": "*",
+    "dotenv": "*",
+    "gulp": "*",
+    "gulp-util": "*",
+    "jquery": "*",
+    "jquery-ujs": "*",
+    "koa": "*",
+    "koa-bodyparser": "*",
+    "koa-flash-simple": "*",
+    "koa-generic-session": "*",
+    "koa-logger": "*",
+    "koa-methodoverride": "*",
+    "koa-pug": "3.0.0-2",
+    "koa-router": "next",
+    "koa-static": "*",
+    "koa-webpack": "*",
+    "lodash": "*",
+    "pg": "*",
+    "sequelize": "*",
+    "sequelize-cli": "*",
+    "sqlite3": "*",
+    "style-loader": "*",
+    "umzug": "*",
+    "webpack": "*"
+  },
+  "devDependencies": {
+    "babel-eslint": "*",
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-flowtype": "*",
+    "eslint-plugin-import": "*",
+    "flow-bin": "^0.56",
+    "flow-typed": "*",
+    "jest": "^21",
+    "jest-supertest-matchers": "*",
+    "nodemon": "*",
+    "supertest": "*"
+  }
 }

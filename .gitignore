@@ -1,8 +1,8 @@
 /node_modules/
-dist
 *.log
-.vscode
-coverage
+dist
+flow-typed
+.tern-port
 *.sqlite
 public/assets
-.env
+.bash_history
