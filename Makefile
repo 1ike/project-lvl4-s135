@@ -1,4 +1,4 @@
-all: compose-setup
+all: setup
 
 prepare:
 	touch .bash_history
@@ -10,10 +10,10 @@ compose:
 compose-install:
 	docker-compose run web yarn
 
-compose-setup: prepare compose-build compose-install compose-db-setup
+setup: prepare compose-build compose-install db-setup
 	npm run flow-typed install
 
-compose-db-setup:
+db-setup:
 	docker-compose run web npm run sequelize db:migrate
 
 compose-kill:
@@ -22,16 +22,16 @@ compose-kill:
 compose-build:
 	docker-compose build
 
-compose-test:
+test:
 	docker-compose run web make test
 
 compose-bash:
 	docker-compose run web bash
 
-compose-console:
+gulp-console:
 	docker-compose-npm run gulp console
 
-compose-lint:
+lint:
 	docker-compose run web npm run eslint
 
 start:
@@ -40,11 +40,11 @@ start:
 compose-check-types:
 	docker-compose run web npm run flow
 
-compose-dist-build:
+build:
 	rm -rf dist
 	docker-compose run web npm run build
 
-compose-publish: compose-dist-build
+publish: build
 	docker-compose run web npm publish
 
 .PHONY: test
