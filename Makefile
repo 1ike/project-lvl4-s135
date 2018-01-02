@@ -7,10 +7,10 @@ prepare:
 compose:
 	docker-compose up
 
-compose-install:
+install:
 	docker-compose run web yarn
 
-setup: prepare compose-build compose-install db-setup
+setup: prepare compose-build install db-setup
 	npm run flow-typed install
 
 db-setup:
