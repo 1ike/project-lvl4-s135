@@ -28,15 +28,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hexlet-boilerplates/nodejs-package.git"
+    "url": "git+https://github.com/1ike/project-lvl4-s135.git"
   },
-  "author": "Kirill Mokevnin",
+  "author": "humble me",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hexlet-boilerplates/nodejs-package/issues"
+    "url": "https://github.com/1ike/project-lvl4-s135.git/issues"
   },
-  "homepage": "https://github.com/hexlet-boilerplates/nodejs-package#readme",
+  "homepage": "https://github.com/1ike/project-lvl4-s135.git#readme",
   "dependencies": {
+    "autoprefixer": "^7.2.4",
     "babel-cli": "*",
     "babel-core": "*",
     "babel-loader": "*",
@@ -45,15 +46,10 @@
     "babel-preset-flow": "*",
     "babel-preset-stage-0": "*",
     "bootstrap": "4.0.0-beta",
-    "popper.js": "*",
     "css-loader": "*",
-    "postcss-loader": "*",
-    "autoprefixer": "*",
-    "node-sass": "*",
-    "sass-loader": "*",
     "debug": "*",
     "dotenv": "*",
-    "gulp": "*",
+    "gulp": "^4.0.0",
     "gulp-util": "*",
     "jquery": "*",
     "jquery-ujs": "*",
@@ -68,7 +64,12 @@
     "koa-static": "*",
     "koa-webpack": "*",
     "lodash": "*",
+    "node-sass": "*",
     "pg": "*",
+    "popper.js": "^1.13.0",
+    "postcss-loader": "*",
+    "rollbar": "*",
+    "sass-loader": "*",
     "sequelize": "*",
     "sequelize-cli": "*",
     "sqlite3": "*",

@@ -14,15 +14,30 @@ import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
 import _ from 'lodash';
 import methodOverride from 'koa-methodoverride';
+import Rollbar from 'rollbar';
+import dotenv from 'dotenv';
 
 import getWebpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
 
+
+dotenv.config();
+
 export default () => {
   const app = new Koa();
 
-  app.keys = ['some secret hurr'];
+  const rollbar = new Rollbar(process.env.ROLLBAR_KEY);
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      rollbar.error(err, ctx.request);
+      ctx.throw(err);
+    }
+  });
+
+  app.keys = [process.env.APP_KEY];
   app.use(session(app));
   app.use(flash());
   app.use(async (ctx, next) => {
@@ -49,6 +64,7 @@ export default () => {
   }
 
   app.use(koaLogger());
+
   const router = new Router();
   addRoutes(router, container);
   app.use(router.allowedMethods());
