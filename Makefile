@@ -23,7 +23,7 @@ compose-build:
 	docker-compose build
 
 test:
-	docker-compose run web make test
+	docker-compose run web npm run test
 
 compose-bash:
 	docker-compose run web bash
@@ -32,7 +32,7 @@ gulp-console:
 	npm run gulp console
 
 lint:
-	docker-compose run web npm run eslint
+	docker-compose run web npm run eslint src
 
 start:
 	DEBUG="application:*" npm run nodemon -- --watch .  --ext '.js' --exec npm run gulp -- server
