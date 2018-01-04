@@ -29,7 +29,7 @@ compose-bash:
 	docker-compose run web bash
 
 gulp-console:
-	docker-compose-npm run gulp console
+	npm run gulp console
 
 lint:
 	docker-compose run web npm run eslint
