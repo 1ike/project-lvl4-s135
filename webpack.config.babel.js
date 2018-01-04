@@ -1,6 +1,10 @@
 import path from 'path';
 import webpack from 'webpack';
 import autoprefixer from 'autoprefixer';
+// import dotenv from 'dotenv';
+
+// dotenv.config();
+// const hasSourceMap = process.env.NODE_ENV == 'development';
 
 export default () => ({
   entry: {
@@ -18,7 +22,7 @@ export default () => ({
         test: /\.js$/,
         exclude: /node_modules/,
         use: 'babel-loader',
-      }, 
+      },
 /*       {
         test: /\.css$/,
         use: [
@@ -37,32 +41,22 @@ export default () => ({
         ],
       }, */
       {
-        test: /\.(scss)$/,
+        test: /\.scss$/,
         use: [{
           loader: 'style-loader', // inject CSS to page
         }, {
           loader: 'css-loader', // translates CSS into CommonJS modules
-          options: {
-            // sourceMap: true
-          }
         }, {
           loader: 'postcss-loader', // Run post css actions
           options: {
             plugins: [
               autoprefixer({
                 browsers: ["> 1%", "last 2 versions"],
-                sourceMap: true
               })
             ]
-          },
+          }
         }, {
           loader: 'sass-loader',
-          options: {
-/*               includePaths: [
-                  helpers.root('src', 'styles', 'global'),
-              ], */
-            sourceMap: true
-          }
         }],
       },
     ],
