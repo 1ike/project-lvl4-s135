@@ -16,7 +16,7 @@
     "gulp": "gulp",
     "sequelize": "sequelize",
     "nodemon": "nodemon",
-    "test": "jest",
+    "test": "jest --coverage",
     "babel-node": "babel-node",
     "flow": "flow",
     "flow-typed": "flow-typed",
