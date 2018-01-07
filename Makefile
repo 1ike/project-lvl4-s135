@@ -1,5 +1,3 @@
-all: setup
-
 prepare:
 	touch .bash_history
 	touch .env
@@ -8,13 +6,13 @@ compose:
 	docker-compose up
 
 install:
-	docker-compose run web yarn
+	docker-compose start web yarn
 
-setup: prepare compose-build install db-setup
+setup: prepare compose-build compose install db-setup
 	npm run flow-typed install
 
 db-setup:
-	docker-compose run web npm run sequelize db:migrate
+	docker-compose start web npm run sequelize db:migrate
 
 compose-kill:
 	docker-compose kill
@@ -23,28 +21,28 @@ compose-build:
 	docker-compose build
 
 test:
-	docker-compose run web npm run test
+	docker-compose start web npm run test
 
 compose-bash:
-	docker-compose run web bash
+	docker-compose start web bash
 
 gulp-console:
 	npm run gulp console
 
 lint:
-	docker-compose run web npm run eslint src
+	docker-compose start web npm run eslint src
 
 start:
 	DEBUG="application:*" npm run nodemon -- --watch .  --ext '.js' --exec npm run gulp -- server
 
 compose-check-types:
-	docker-compose run web npm run flow
+	docker-compose start web npm run flow
 
 build:
 	rm -rf dist
-	docker-compose run web npm run build
+	docker-compose start web npm run build
 
 publish: build
-	docker-compose run web npm publish
+	docker-compose start web npm publish
 
 .PHONY: test
