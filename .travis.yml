@@ -5,6 +5,7 @@ node_js:
 before_script:
   - docker build .
   - docker-compose up
+  - echo ROLLBAR_KEY=$ROLLBAR_KEY > .env
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
