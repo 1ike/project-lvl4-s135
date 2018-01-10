@@ -20,6 +20,7 @@ import dotenv from 'dotenv';
 import getWebpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
+import { User } from './models';
 
 
 dotenv.config();
@@ -32,7 +33,9 @@ export default () => {
     try {
       await next();
     } catch (err) {
-      rollbar.error(err, ctx.request);
+      if (process.env.NODE_ENV === 'production') {
+        rollbar.error(err, ctx.request);
+      }
       ctx.throw(err);
     }
   });
@@ -44,6 +47,7 @@ export default () => {
     ctx.state = {
       flash: ctx.flash,
       isSignedIn: () => ctx.session.userId !== undefined,
+      currentUser: await User.findById(ctx.session.userId),
     };
     await next();
   });
@@ -70,11 +74,13 @@ export default () => {
   app.use(router.allowedMethods());
   app.use(router.routes());
 
+  const isDevelopment = process.env.NODE_ENV === 'development';
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
-    debug: true,
-    pretty: true,
-    compileDebug: true,
+    debug: isDevelopment,
+    pretty: isDevelopment,
+    compileDebug: isDevelopment,
+    noCache: isDevelopment,
     locals: [],
     basedir: path.join(__dirname, 'views'),
     helperPath: [
@@ -83,5 +89,6 @@ export default () => {
     ],
   });
   pug.use(app);
+
   return app;
 };

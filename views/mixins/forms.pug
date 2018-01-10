@@ -4,7 +4,9 @@ mixin formFor(f, options = {})
   - const url = _.get(options, 'url');
   - const method = _.get(options, 'method', 'get').toLowerCase();
   - const isStandart = _.includes(['get', 'post'], method);
-  form(action= url method= isStandart ? method : 'post')
+  - const clss = _.get(options, 'clss');
+  - if (clss) attributes.class = clss;
+  form(action= url method= isStandart ? method : 'post')&attributes(attributes)
     if !isStandart
       input(name='_method' type='hidden' value= method)
     block
@@ -17,6 +19,6 @@ mixin input(f, property, options = { as: 'text' })
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin button(f, type = 'submit')
+mixin button(f, value = 'Save', clss = 'btn', type = 'submit')
   .form-group
-    input(class='btn' type=`${type}` value=`Save`)
+    input(class=`${clss}` type=`${type}` value=`${value}`)

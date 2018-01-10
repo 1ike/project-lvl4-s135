@@ -32,7 +32,7 @@ gulp-console:
 lint:
 	docker-compose run web npm run eslint src
 
-start:
+server:
 	DEBUG="application:*" npm run nodemon -- --watch .  --ext '.js' --exec npm run gulp -- server
 
 compose-check-types:

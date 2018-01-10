@@ -1,0 +1,15 @@
+extends /layouts/application.pug
+
+block content
+
+  h1.mb-4= currentUser.fullName
+    =' '
+    small.text-muted (edit profile)
+
+  +formFor(f, { url: urlFor('users'), method: 'put' })
+    include inputs.pug
+    +button(f, 'Edit profile', 'btn btn-warning mt-3 mb-3')
+
+  +formFor(f, { url: urlFor('users'), method: 'delete', clss: 'mt-5' })
+    input(name='_id' type='hidden' value= currentUser.id)
+    +button(f, 'Delete profile', 'btn btn-danger')
