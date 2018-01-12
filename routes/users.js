@@ -28,8 +28,9 @@ export default (router) => {
       const currentUser = ctx.state.currentUser;
       if (!currentUser || +ctx.params.id !== currentUser.id) {
         ctx.redirect('/users');
+      } else {
+        ctx.render('users/user', { f: buildFormObj(currentUser) });
       }
-      ctx.render('users/user', { f: buildFormObj(currentUser) });
     })
     .post('users', '/users', async (ctx) => {
       const form = ctx.request.body.form;
@@ -43,15 +44,19 @@ export default (router) => {
       }
     })
     .put('users', '/users', async (ctx) => {
-      const form = ctx.request.body.form;
-      try {
-        await ctx.state.currentUser.update(form);
-        ctx.flash.set('User has been updated');
-        ctx.redirect(router.url('root'));
-      } catch (e) {
-        console.log(e);
-        const user = User.build(form);
-        ctx.render('users/new', { f: buildFormObj(user, e) });
+      const currentUser = ctx.state.currentUser;
+      if (!currentUser) {
+        ctx.redirect('/users');
+      } else {
+        const form = ctx.request.body.form;
+        try {
+          await currentUser.update(form);
+          ctx.flash.set('User has been updated');
+          ctx.redirect(router.url('root'));
+        } catch (e) {
+          const user = User.build(form);
+          ctx.render('users/user', { f: buildFormObj(user, e) });
+        }
       }
     })
     .delete('users', '/users', async (ctx) => {
