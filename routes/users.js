@@ -4,8 +4,21 @@ import { User } from '../models';
 export default (router) => {
   router
     .get('users', '/users', async (ctx) => {
-      const users = await User.findAll();
-      ctx.render('users', { users });
+      const page = +ctx.query.page;
+      const url = +ctx.query.page;
+
+      if ('page' in ctx.query && (!Number.isInteger(page) || page < 1)) {
+        ctx.redirect(ctx.path);
+      }
+
+      const LIMIT_BY_PAGE = 10;
+
+      const res = await User.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
+
+      console.log(res.page);
+      console.log(res.count);
+      console.log(ctx.path);
+      ctx.render('users', { res });
     })
     .get('newUser', '/users/new', (ctx) => {
       const user = User.build();
@@ -13,11 +26,10 @@ export default (router) => {
     })
     .get('user', '/users/:id', async (ctx) => {
       const currentUser = ctx.state.currentUser;
-      if (!currentUser || ctx.params.id != currentUser.id) {
+      if (!currentUser || +ctx.params.id !== currentUser.id) {
         ctx.redirect('/users');
-      } else {
-        ctx.render('users/user', { f: buildFormObj(currentUser) });
       }
+      ctx.render('users/user', { f: buildFormObj(currentUser) });
     })
     .post('users', '/users', async (ctx) => {
       const form = ctx.request.body.form;

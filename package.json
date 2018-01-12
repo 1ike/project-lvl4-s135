@@ -89,6 +89,7 @@
     "jest": "^21",
     "jest-supertest-matchers": "*",
     "nodemon": "*",
+    "faker": "*",
     "supertest": "*"
   }
 }

@@ -1,4 +1,5 @@
 import { encrypt } from '../lib/secure';
+import findWithPagination from '../lib/findWithPagination';
 
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -19,7 +20,7 @@ export default (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.VIRTUAL,
-      set: function(value) {
+      set(value) {
         this.setDataValue('passwordDigest', encrypt(value));
         this.setDataValue('password', value);
         return value;
@@ -30,21 +31,13 @@ export default (sequelize, DataTypes) => {
     },
     fullName: {
       type: DataTypes.VIRTUAL,
-      get: function() {
+      get() {
         return `${this.firstName} ${this.lastName}`;
       },
     },
-  }, {
-    classMethods: {
-      associate(models) {
-        // associations can be defined here
-      },
-    },
-/*     getterMethods: {
-      fullName: function() {
-        return `${this.firstName} ${this.lastName}`;
-      },
-    }, */
   });
+
+  User.findWithPagination = findWithPagination;
+
   return User;
 };

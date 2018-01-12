@@ -1,15 +1,25 @@
 extends /layouts/application.pug
 
 block content
-  table.table.table-stripped
+  h1 Users
+  table.table.table-stripped.mb-5
     thead
       tr
         th Full Name
         th Email
         th Created At
     tbody
-      each user in users
+      each user in res.rows
         tr
           td= user.fullName
           td= user.email
           td= user.createdAt
+
+  if res.pagination.length
+    nav.d-flex.justify-content-center(aria-label="pages navigation")
+      ul.pagination
+        each button in res.pagination
+          li.page-item(class={active: button.active} class={disabled: button.disabled})
+            a.page-link(href=button.link)= button.value
+              if button.active
+                span.sr-only (current)
