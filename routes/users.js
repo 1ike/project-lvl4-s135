@@ -5,19 +5,14 @@ export default (router) => {
   router
     .get('users', '/users', async (ctx) => {
       const page = +ctx.query.page;
-      const url = +ctx.query.page;
 
       if ('page' in ctx.query && (!Number.isInteger(page) || page < 1)) {
         ctx.redirect(ctx.path);
       }
 
       const LIMIT_BY_PAGE = 10;
-
       const res = await User.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
 
-      console.log(res.page);
-      console.log(res.count);
-      console.log(ctx.path);
       ctx.render('users', { res });
     })
     .get('newUser', '/users/new', (ctx) => {
@@ -33,13 +28,16 @@ export default (router) => {
       }
     })
     .post('users', '/users', async (ctx) => {
-      const form = ctx.request.body.form;
+      const form = ctx.request.body.form || ctx.request.body;
       const user = User.build(form);
       try {
         await user.save();
         ctx.flash.set('User has been created');
         ctx.redirect(router.url('root'));
       } catch (e) {
+        console.log('eeeeeeee = ', e);
+        // console.log(ctx.request.body);
+        // console.log(ctx.request.rawBody);
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     })
@@ -61,6 +59,7 @@ export default (router) => {
     })
     .delete('users', '/users', async (ctx) => {
       const currentUser = ctx.state.currentUser;
+      ctx.assert(currentUser, 403, "Don't mess with me!");
       try {
         await currentUser.destroy();
         ctx.session.userId = undefined;

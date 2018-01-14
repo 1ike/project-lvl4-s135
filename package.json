@@ -17,6 +17,8 @@
     "sequelize": "sequelize",
     "nodemon": "nodemon",
     "test": "jest --coverage",
+    "t": "jest --watchAll",
+    "t1": "jest",
     "babel-node": "babel-node",
     "flow": "flow",
     "flow-typed": "flow-typed",

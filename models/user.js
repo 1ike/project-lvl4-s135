@@ -3,22 +3,37 @@ import findWithPagination from '../lib/findWithPagination';
 
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: {
+    firstName: {
+      allowNull: false,
       type: DataTypes.STRING,
-      // unique: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    lastName: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    email: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      unique: true,
       validate: {
         isEmail: true,
       },
     },
     passwordDigest: {
+      allowNull: false,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
       },
     },
     password: {
+      allowNull: false,
       type: DataTypes.VIRTUAL,
       set(value) {
         this.setDataValue('passwordDigest', encrypt(value));

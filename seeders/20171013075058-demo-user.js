@@ -1,23 +1,12 @@
+const fakeUsers = require('../lib/fakeUsers');
 
+const NUMBER = 55;
 
-const faker = require('faker');
+const users = fakeUsers(NUMBER).map((user) => {
+  delete user.password;
+  return user;
+});
 
-const NUMBER = 50;
-
-const fakeUsers = (number, acc) => {
-  if (number === 0) return acc;
-
-  return fakeUsers(number - 1, [...acc, {
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    email: faker.internet.email(),
-    passwordDigest: faker.internet.password(),
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.past(),
-  }]);
-};
-
-const users = fakeUsers(NUMBER, []);
 /* const users = [{
   firstName: 'a',
   lastName: 'a',
