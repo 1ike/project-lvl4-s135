@@ -11,7 +11,7 @@ import app from '..';
 const queryInterface = sequelize.queryInterface;
 
 
-/* describe('requests', () => {
+describe('requests', () => {
   let server;
 
   beforeAll(() => {
@@ -59,7 +59,7 @@ const queryInterface = sequelize.queryInterface;
     server.close();
     done();
   });
-}); */
+});
 
 
 describe('Users CRUD', () => {
@@ -132,7 +132,7 @@ describe('Users CRUD', () => {
   });
 
 
-  /* it('Users: Add uniq user', async () => {
+  it('Users: Add uniq user', async () => {
     const user = fakeUsers()[0];
     console.log(user);
     const url = '/users';
@@ -148,10 +148,10 @@ describe('Users CRUD', () => {
     const dbRes = await User.count();
 
     expect(dbRes).toBe(1);
-  }); */
+  });
 
 
-  /* it('Users: Sign In and Delete user', async () => {
+  it('Users: Sign In and Delete user', async () => {
     const assets = await prepareUsers();
 
     const {
@@ -160,76 +160,69 @@ describe('Users CRUD', () => {
       cookies,
     } = assets;
 
-    const res3 = await request.agent(server)
+    const res1 = await request.agent(server)
       .get(`/users/${USER_ID}`)
       .set('Cookie', cookies);
 
-    expect(res3).toHaveHTTPStatus(200);
+    expect(res1).toHaveHTTPStatus(200);
 
 
-    const res4 = await postForm(usersURL, { _method: 'delete' });
+    const res2 = await postForm(usersURL, { _method: 'delete' });
     const dbRes2 = await User.count();
 
-    expect(res4).toHaveHTTPStatus(403);
+    expect(res2).toHaveHTTPStatus(403);
     expect(dbRes2).toBe(NUMBER);
 
 
-    const res5 = await postForm(usersURL, { _method: 'delete' }, cookies);
+    const res3 = await postForm(usersURL, { _method: 'delete' }, cookies);
     const dbRes3 = await User.count();
 
-    expect(res5).toHaveHTTPStatus(302);
+    expect(res3).toHaveHTTPStatus(302);
     expect(dbRes3).toBe(NUMBER - 1);
-  }); */
+  });
 
 
-  it('Users: Sign Out and Update user', async () => {
+  it('Users: Update and Sign Out user', async () => {
     const assets = await prepareUsers();
 
     const {
-      NUMBER,
       USER_ID,
       cookies,
       user,
       userPassword,
     } = assets;
 
+    user.password = userPassword;
 
-    const res3 = await request.agent(server)
-      .get(`/users/${USER_ID}`)
-      .set('Cookie', cookies);
+    const res1 = await postForm(usersURL, { _method: 'put' });
 
-    expect(res3).toHaveHTTPStatus(200);
-
-
-    const res4 = await postForm(usersURL, { _method: 'delete' });
-    const dbRes2 = await User.count();
-
-    expect(res4).toHaveHTTPStatus(403);
-    expect(dbRes2).toBe(NUMBER);
+    expect(res1).toHaveHTTPStatus(403);
 
 
-    const res5 = await postForm(usersURL, { _method: 'delete' }, cookies);
-    const dbRes3 = await User.count();
+    const newName = `${user.firtsName}test`;
+    const res2 = await postForm(
+      usersURL,
+      { ...user, firstName: newName, _method: 'put' },
+      cookies,
+    );
+    const dbRes2 = await User.findById(USER_ID);
 
-    expect(res5).toHaveHTTPStatus(302);
-    expect(dbRes3).toBe(NUMBER - 1);
-    // console.log(res3);
-    // const dbRes2 = await User.findAndCountAll();
-
-    // expect(dbRes2.count).toBe(1);
+    expect(res2).toHaveHTTPStatus(302);
+    expect(dbRes2.firstName).toBe(newName);
 
 
-    // const user = await User.findById(NUMBER);
-    // await  user.destroy()
-    //  const dbResDel = await User.findById();
+    await postForm('/session', { _method: 'delete' }, cookies);
+    const res3 = await postForm(usersURL, { _method: 'delete' }, cookies);
+
+    expect(res3).toHaveHTTPStatus(403);
   });
 
 
-  /*   it('GET 404', async () => {
+  it('GET 404', async () => {
     const res = await request.agent(server)
       .get('/wrong-path');
     expect(res).toHaveHTTPStatus(404);
-  }); */
+  });
 
   afterEach((done) => {
     server.close();

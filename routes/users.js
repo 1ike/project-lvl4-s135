@@ -35,26 +35,20 @@ export default (router) => {
         ctx.flash.set('User has been created');
         ctx.redirect(router.url('root'));
       } catch (e) {
-        console.log('eeeeeeee = ', e);
-        // console.log(ctx.request.body);
-        // console.log(ctx.request.rawBody);
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     })
     .put('users', '/users', async (ctx) => {
       const currentUser = ctx.state.currentUser;
-      if (!currentUser) {
-        ctx.redirect('/users');
-      } else {
-        const form = ctx.request.body.form;
-        try {
-          await currentUser.update(form);
-          ctx.flash.set('User has been updated');
-          ctx.redirect(router.url('root'));
-        } catch (e) {
-          const user = User.build(form);
-          ctx.render('users/user', { f: buildFormObj(user, e) });
-        }
+      ctx.assert(currentUser, 403, "Don't mess with me!");
+      const form = ctx.request.body.form || ctx.request.body;
+      try {
+        await currentUser.update(form);
+        ctx.flash.set('User has been updated');
+        ctx.redirect(router.url('root'));
+      } catch (e) {
+        const user = User.build(form);
+        ctx.render('users/user', { f: buildFormObj(user, e) });
       }
     })
     .delete('users', '/users', async (ctx) => {
