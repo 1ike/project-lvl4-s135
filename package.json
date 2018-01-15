@@ -77,7 +77,6 @@
     "sqlite3": "*",
     "style-loader": "*",
     "umzug": "*",
-    "faker": "*",
     "webpack": "*"
   },
   "devDependencies": {
@@ -92,6 +91,7 @@
     "jest": "^21",
     "jest-supertest-matchers": "*",
     "nodemon": "*",
+    "faker": "*",
     "supertest": "*"
   }
 }
