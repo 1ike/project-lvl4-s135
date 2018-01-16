@@ -66,11 +66,11 @@ describe('Users CRUD', () => {
   const usersURL = '/users';
   const sessionURL = '/session';
 
-  const postForm = async (url, form, cookies = '') => request.agent(server)
+  const postForm = async (url, data, cookies = '') => request.agent(server)
     .post(url)
     .type('form')
     .set('Cookie', cookies)
-    .send(form);
+    .send(data);
 
   const prepareUsers = async () => {
     const NUMBER = 3;
@@ -97,12 +97,12 @@ describe('Users CRUD', () => {
     expect(dbRes1).toBe(NUMBER);
 
 
-    const res1 = await postForm(sessionURL, {});
+    const res1 = await postForm(sessionURL, { form: { email: '', password: '' } });
 
     expect(res1).toHaveHTTPStatus(200);
 
 
-    const res2 = await postForm(sessionURL, sessionForm);
+    const res2 = await postForm(sessionURL, { form: sessionForm });
 
     expect(res2).toHaveHTTPStatus(302);
 
@@ -133,10 +133,9 @@ describe('Users CRUD', () => {
 
   it('Users: Add uniq user', async () => {
     const user = fakeUsers()[0];
-    console.log(user);
     const url = '/users';
 
-    const res1 = await postForm(url, user);
+    const res1 = await postForm(url, { form: user });
 
     expect(res1).toHaveHTTPStatus(302);
 
@@ -201,7 +200,7 @@ describe('Users CRUD', () => {
     const newName = `${user.firtsName}test`;
     const res2 = await postForm(
       usersURL,
-      { ...user, firstName: newName, _method: 'put' },
+      { form: { ...user, firstName: newName }, _method: 'put' },
       cookies,
     );
     const dbRes2 = await User.findById(USER_ID);

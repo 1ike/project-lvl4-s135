@@ -6,10 +6,6 @@ export default (router) => {
     .get('users', '/users', async (ctx) => {
       const page = +ctx.query.page;
 
-      /*       if ('page' in ctx.query && (!Number.isInteger(page) || page < 1)) {
-        ctx.redirect(ctx.path);
-      } */
-
       const LIMIT_BY_PAGE = 10;
       const res = await User.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
 
@@ -28,7 +24,7 @@ export default (router) => {
       }
     })
     .post('users', '/users', async (ctx) => {
-      const form = ctx.request.body.form || ctx.request.body;
+      const { form } = ctx.request.body;
       const user = User.build(form);
       try {
         await user.save();
@@ -40,8 +36,9 @@ export default (router) => {
     })
     .put('users', '/users', async (ctx) => {
       const { currentUser } = ctx.state;
+      console.log(ctx.request.body);
       ctx.assert(currentUser, 403, "Don't mess with me!");
-      const form = ctx.request.body.form || ctx.request.body;
+      const { form } = ctx.request.body;
       try {
         await currentUser.update(form);
         ctx.flash.set('User has been updated');
