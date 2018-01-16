@@ -20,7 +20,7 @@ export default (router) => {
       ctx.render('users/new', { f: buildFormObj(user) });
     })
     .get('user', '/users/:id', async (ctx) => {
-      const currentUser = ctx.state.currentUser;
+      const { currentUser } = ctx.state;
       if (!currentUser || +ctx.params.id !== currentUser.id) {
         ctx.redirect('/users');
       } else {
@@ -39,7 +39,7 @@ export default (router) => {
       }
     })
     .put('users', '/users', async (ctx) => {
-      const currentUser = ctx.state.currentUser;
+      const { currentUser } = ctx.state;
       ctx.assert(currentUser, 403, "Don't mess with me!");
       const form = ctx.request.body.form || ctx.request.body;
       try {
@@ -52,7 +52,7 @@ export default (router) => {
       }
     })
     .delete('users', '/users', async (ctx) => {
-      const currentUser = ctx.state.currentUser;
+      const { currentUser } = ctx.state;
       ctx.assert(currentUser, 403, "Don't mess with me!");
       try {
         await currentUser.destroy();

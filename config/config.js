@@ -1,11 +1,11 @@
 module.exports = {
   development: {
-    storage: "./db.development.sqlite",
-    dialect: "sqlite"
+    storage: './db.development.sqlite',
+    dialect: 'sqlite',
   },
   test: {
-    storage: ":memory:",
-    dialect: "sqlite"
+    storage: ':memory:',
+    dialect: 'sqlite',
   },
   production: {
     dialect: process.env.DB_DIALECT,
@@ -15,5 +15,5 @@ module.exports = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     storage: process.env.DB_STORAGE,
-  }
+  },
 };

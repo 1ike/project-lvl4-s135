@@ -1,6 +1,5 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
-import querystring from 'querystring';
 
 import { User, sequelize } from '../models';
 import fakeUsers from '../lib/fakeUsers';
@@ -8,7 +7,7 @@ import fakeUsers from '../lib/fakeUsers';
 import app from '..';
 
 
-const queryInterface = sequelize.queryInterface;
+const { queryInterface } = sequelize;
 
 
 describe('requests', () => {

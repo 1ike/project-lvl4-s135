@@ -3,7 +3,6 @@ node_js:
   - "8"
 
 before_script:
-  - docker build .
   - echo ROLLBAR_KEY=$ROLLBAR_KEY > .env
   - echo APP_KEY=$APP_KEY >> .env
   - echo APP_SALT=$APP_SALT >> .env
