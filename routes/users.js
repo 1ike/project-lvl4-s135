@@ -6,9 +6,9 @@ export default (router) => {
     .get('users', '/users', async (ctx) => {
       const page = +ctx.query.page;
 
-      if ('page' in ctx.query && (!Number.isInteger(page) || page < 1)) {
+      /*       if ('page' in ctx.query && (!Number.isInteger(page) || page < 1)) {
         ctx.redirect(ctx.path);
-      }
+      } */
 
       const LIMIT_BY_PAGE = 10;
       const res = await User.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
