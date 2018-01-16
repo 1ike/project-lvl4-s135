@@ -1,0 +1,8 @@
+if res.pagination.length
+  nav.d-flex.justify-content-center(aria-label="pages navigation")
+    ul.pagination
+      each button in res.pagination
+        li.page-item(class={active: button.active} class={disabled: button.disabled})
+          a.page-link(href=button.link)= button.value
+            if button.active
+              span.sr-only (current)
