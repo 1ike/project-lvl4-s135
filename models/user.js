@@ -7,14 +7,18 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          msg: 'Must not be empty',
+        },
       },
     },
     lastName: {
       allowNull: false,
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          msg: 'Must not be empty',
+        },
       },
     },
     email: {
@@ -22,7 +26,9 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true,
       validate: {
-        isEmail: true,
+        isEmail: {
+          msg: 'Must be a valid email',
+        },
       },
     },
     passwordDigest: {
@@ -41,7 +47,10 @@ export default (sequelize, DataTypes) => {
         return value;
       },
       validate: {
-        len: [1, +Infinity],
+        len: {
+          args: [1, +Infinity],
+          msg: 'Must not be empty',
+        },
       },
     },
     fullName: {
