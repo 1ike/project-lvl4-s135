@@ -36,7 +36,6 @@ export default (router) => {
     })
     .put('users', '/users', async (ctx) => {
       const { currentUser } = ctx.state;
-      console.log(ctx.request.body);
       ctx.assert(currentUser, 403, "Don't mess with me!");
       const { form } = ctx.request.body;
       try {
@@ -53,8 +52,7 @@ export default (router) => {
       ctx.assert(currentUser, 403, "Don't mess with me!");
       try {
         await currentUser.destroy();
-        ctx.session.userId = undefined;
-        ctx.flash.set('User has been deleted');
+        ctx.session = null;
         ctx.redirect(router.url('root'));
       } catch (e) {
         ctx.flash.set('User has not been deleted. You can try again.');
