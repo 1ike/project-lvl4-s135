@@ -3,5 +3,5 @@ extends /layouts/application.pug
 block content
   h1 Create user profile
   +formFor(f, { url: urlFor('users'), method: 'post' })
-    include /includes/inputs.pug
+    include /includes/inputs/users.pug
     +button(f, 'Create profile', 'btn btn-success mt-4')

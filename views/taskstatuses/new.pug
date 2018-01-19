@@ -1,0 +1,7 @@
+extends /layouts/application.pug
+
+block content
+  h1 Create Task Status
+  +formFor(f, { url: urlFor('taskstatuses'), method: 'post' })
+    +input(f, 'name')
+    +button(f, 'Create profile', 'btn btn-success mt-4')

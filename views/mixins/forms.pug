@@ -11,11 +11,12 @@ mixin formFor(f, options = {})
       input(name='_method' type='hidden' value= method)
     block
 
-mixin input(f, property, options = { as: 'text' })
-  - const value = f.object[property] === undefined ? '' : f.object[property]
+mixin input(f, property, options = { as: 'text' }, val = '')
+  - const value = f.object[property] === undefined ? val : f.object[property]
   .form-group(class=(f.errors[property] && 'has-danger'))
-    label= property
-    input(name=getInputName(f, property) class='form-control' type=options['as'] value=`${value}`)
+    if (options.as !== 'hidden')
+      label= property
+    input(name=getInputName(f, property) class='form-control' type=options.as value=`${value}`)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 

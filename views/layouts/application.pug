@@ -13,8 +13,14 @@ html(lang="en")
         span.navbar-toggler-icon
       .collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          li.nav-item.active
-            a.nav-link(href=urlFor('users')) Users
+          - const usersURL = urlFor('users')
+          li.nav-item(class=(usersURL === currentURL) ? 'active' : '')
+            a.nav-link(href=usersURL) Users
+
+          - const taskstatusesURL = urlFor('taskstatuses')
+          li.nav-item(class=(taskstatusesURL === currentURL) ? 'active' : '')
+            a.nav-link(href=taskstatusesURL) Task Statuses
+
         ul.navbar-nav
           if isSignedIn()
             li.nav-item.mr-3

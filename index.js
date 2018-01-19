@@ -48,6 +48,7 @@ export default () => {
       flash: ctx.flash,
       isSignedIn: () => ctx.session.userId !== undefined,
       currentUser: await User.findById(ctx.session.userId),
+      currentURL: ctx.url,
     };
     await next();
   });
