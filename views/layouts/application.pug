@@ -13,6 +13,10 @@ html(lang="en")
         span.navbar-toggler-icon
       .collapse.navbar-collapse
         ul.navbar-nav.mr-auto
+          - const tasksURL = urlFor('tasks')
+          li.nav-item(class=(tasksURL === currentURL) ? 'active' : '')
+            a.nav-link(href=tasksURL) Tasks
+
           - const usersURL = urlFor('users')
           li.nav-item(class=(usersURL === currentURL) ? 'active' : '')
             a.nav-link(href=usersURL) Users

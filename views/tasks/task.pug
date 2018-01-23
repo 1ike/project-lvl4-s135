@@ -1,0 +1,16 @@
+extends /layouts/application.pug
+
+block content
+
+  h1 Task
+    =' '
+    small.text-muted (edit profile)
+
+  - const url = urlFor('task', f.object.id)
+
+  +formFor(f, { url, method: 'put' })
+    include inputs.pug
+    +button(f, 'Edit task', 'btn btn-warning mt-3 mb-3')
+
+  +formFor(f, { url, method: 'delete', clss: 'mt-5' })
+    +button(f, 'Delete task', 'btn btn-danger')

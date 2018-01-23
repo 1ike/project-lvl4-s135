@@ -5,14 +5,17 @@ block content
   table.table.table-stripped.mb-5
     thead
       tr
-        th ID
+        th.taskstatuses-ID ID
         th Name
     tbody
       each status in statuses
         tr
           td= status.id
           td
-            a(href=urlFor('taskstatus', status.id))= status.name
+            if isSignedIn()
+              a(href=urlFor('taskstatus', status.id))= status.name
+            else
+              = status.name
 
   if isSignedIn()
     a.btn.btn-success.mt-4(href=urlFor('newTaskStatus')) Create Task Status

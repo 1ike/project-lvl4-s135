@@ -1,0 +1,7 @@
+extends /layouts/application.pug
+
+block content
+  h1 Create task
+  +formFor(f, { url: urlFor('newTask'), method: 'post' })
+    include inputs.pug
+    +button(f, 'Create task', 'btn btn-success mt-4')

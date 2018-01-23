@@ -1,0 +1,6 @@
++input(f, 'name')
++input(f, 'description')
++select(f, 'statusId', f.object.statuses, ['name'], { label: 'status', default: f.object.statusIdDefault })
+//- +input(f, 'creator')
++select(f, 'assignedToId', f.object.users, ['id', 'fullName'], {  label: 'assignedTo' })
++input(f, 'tagsList', { as: 'text', label: 'tags' })

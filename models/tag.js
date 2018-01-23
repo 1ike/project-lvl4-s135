@@ -1,17 +1,17 @@
 
 export default (sequelize, DataTypes) => {
-  const TaskStatus = sequelize.define('TaskStatus', {
+  const Tag = sequelize.define('Tag', {
     name: {
       allowNull: false,
       type: DataTypes.STRING,
       unique: true,
       validate: {
         notEmpty: {
-          msg: 'Task Status name must not be empty',
+          msg: 'Tag name must not be empty',
         },
       },
     },
   });
 
-  return TaskStatus;
+  return Tag;
 };

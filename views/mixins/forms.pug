@@ -11,12 +11,28 @@ mixin formFor(f, options = {})
       input(name='_method' type='hidden' value= method)
     block
 
-mixin input(f, property, options = { as: 'text' }, val = '')
-  - const value = f.object[property] === undefined ? val : f.object[property]
+mixin input(f, property, options = { as: 'text' })
+  - const value = f.object[property] === undefined ? options.val || '' : f.object[property]
   .form-group(class=(f.errors[property] && 'has-danger'))
     if (options.as !== 'hidden')
-      label= property
+      label= options.label || property
     input(name=getInputName(f, property) class='form-control' type=options.as value=`${value}`)
+    if f.errors[property]
+      .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+
+mixin select(f, property, range, fieldsForChoice, options = {})
+  - const value = f.object[property] || options.default || ''
+  .form-group(class=(f.errors[property] && 'has-danger'))
+    label= options.label || property
+    select.custom-select(name=getInputName(f, property) class='form-control')
+      if (!value)
+        option(selected value='')= options.placeholder || '...'
+      each item in range
+        - const result = fieldsForChoice.map(i => item[i]).join(' : ');
+        if (value === item.id)
+          option(value=item.id selected)= result
+        else
+          option(value=item.id)= result
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 

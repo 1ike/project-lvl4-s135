@@ -1,0 +1,37 @@
+extends /layouts/application.pug
+
+block content
+  h1 Tasks
+  table.table.table-stripped.mb-5
+    thead
+      tr
+        th ID
+        th Name
+        th Description
+        th Status
+        th Creator
+        th Assigned To
+        th Tags
+    tbody
+      each item in res.rows
+        tr
+          td= item.task.id
+          td
+            if isSignedIn() && currentUser.id == item.creator.id
+              a(href=urlFor('task', item.task.id))= item.task.name
+            else
+              = item.task.name
+          td= item.task.description
+          td= item.status.name
+          td= `${item.creator.fullName}`
+            |  &nbsp;
+            = `(id: ${item.creator.id})`
+          td= `${item.assignedTo.fullName}`
+            |  &nbsp;
+            = `(id: ${item.assignedTo.id})`
+          td= item.tags.map(i => i.name).join(', ')
+
+  include /includes/pagination.pug
+
+  //- if isSignedIn()
+  a.btn.btn-success.mt-4(href=urlFor('newTask')) Create New Task

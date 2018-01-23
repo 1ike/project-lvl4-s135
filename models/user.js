@@ -8,7 +8,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Must not be empty',
+          msg: 'User firstName must not be empty',
         },
       },
     },
@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Must not be empty',
+          msg: 'User lastName must not be empty',
         },
       },
     },
@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
       unique: true,
       validate: {
         isEmail: {
-          msg: 'Must be a valid email',
+          msg: 'User email must be a valid email',
         },
       },
     },
@@ -49,7 +49,7 @@ export default (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, +Infinity],
-          msg: 'Must not be empty',
+          msg: 'User password must not be empty',
         },
       },
     },
