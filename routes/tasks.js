@@ -112,7 +112,7 @@ export default (router) => {
         res: { ...res, rows },
       });
     })
-    .get('newTask', '/tasks/new', async (ctx) => {
+    .get('newTask', '/tasks/new', authorizeForTask, async (ctx) => {
       const statuses = await TaskStatus.findAll();
       const statusNew = statuses.filter(status => status.name === 'new');
       if (!statusNew.length) {

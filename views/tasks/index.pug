@@ -33,5 +33,5 @@ block content
 
   include /includes/pagination.pug
 
-  //- if isSignedIn()
-  a.btn.btn-success.mt-4(href=urlFor('newTask')) Create New Task
+  if isSignedIn()
+    a.btn.btn-success.mt-4(href=urlFor('newTask')) Create New Task
