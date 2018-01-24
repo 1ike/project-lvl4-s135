@@ -22,7 +22,7 @@ block content
             else
               = item.task.name
           td= item.task.description
-          td= item.status.name
+          td= item.status && item.status.name
           td= `${item.creator.fullName}`
             |  &nbsp;
             = `(id: ${item.creator.id})`

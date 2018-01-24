@@ -2,10 +2,8 @@ import _ from 'lodash';
 
 import buildFormObj from '../lib/formObjectBuilder';
 import auth from '../lib/auth';
-import { Task, TaskStatus, User, Tag, sequelize } from '../models';
+import { Task, TaskStatus, User, Tag } from '../models';
 
-
-const Op = sequelize.Op;
 
 const authorizeForTask = async (ctx, next) => {
   ctx.assert(ctx.session.userId, 401, 'Only for registered users');
@@ -46,25 +44,30 @@ const createOrUpdateTask = async (ctx, router, needToCreate) => {
         return _.words(trimmed).join(' ');
       })
       .filter(_.identity);
-    const promises = trimmedTags.map(async (tag) => {
-      const data = await Tag.findOrCreate({
-        where: {
-          name: tag,
-        },
+    if (trimmedTags.length) {
+      const addedTagsPromises = trimmedTags.map(async (tag) => {
+        const result = await Tag.findOne({
+          where: {
+            name: tag,
+          },
+        });
+        return result ? task.addTag(result) : task.createTag({ name: tag });
       });
-      return task.addTag(data[0]);
-    });
-    await Promise.all(promises);
+      await Promise.all(addedTagsPromises);
+    }
     if (!needToCreate) {
       const previousTags = (await task.getTags()).map(tag => tag.name);
       const oldTags = _.difference(previousTags, trimmedTags);
-      await Tag.destroy({
-        where: {
-          name: {
-            [Op.in]: oldTags,
+      const removedTagsPromises = oldTags.map(async (tag) => {
+        const oldTag = await Tag.findOne({
+          where: {
+            name: tag,
           },
-        },
+        });
+        const tasks = await oldTag.getTasks();
+        return tasks.length ? task.removeTag(oldTag) : oldTag.destroy();
       });
+      await Promise.all(removedTagsPromises);
     }
 
     const msg = needToCreate ? 'created' : 'updated';
