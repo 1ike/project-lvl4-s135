@@ -1,4 +1,5 @@
 import buildFormObj from '../lib/formObjectBuilder';
+import auth from '../lib/auth';
 import { User } from '../models';
 
 export default (router) => {
@@ -6,8 +7,8 @@ export default (router) => {
     .get('users', '/users', async (ctx) => {
       const page = +ctx.query.page;
 
-      const LIMIT_BY_PAGE = 10;
-      const res = await User.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
+      const limitByPage = 10;
+      const res = await User.findWithPagination(ctx, page || 1, limitByPage);
 
       ctx.render('users', { res });
     })
@@ -15,13 +16,9 @@ export default (router) => {
       const user = User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
     })
-    .get('user', '/users/:id', async (ctx) => {
+    .get('user', '/users/:id', auth, async (ctx) => {
       const { currentUser } = ctx.state;
-      if (!currentUser || +ctx.params.id !== currentUser.id) {
-        ctx.redirect('/users');
-      } else {
-        ctx.render('users/user', { f: buildFormObj(currentUser) });
-      }
+      ctx.render('users/user', { f: buildFormObj(currentUser) });
     })
     .post('users', '/users', async (ctx) => {
       const { form } = ctx.request.body;

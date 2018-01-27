@@ -12,5 +12,5 @@ block content
     +input(f, 'name')
     +button(f, 'Edit Task Status', 'btn btn-warning mt-3 mb-3')
 
-  +formFor(f, { url, method: 'delete', clss: 'mt-5' })
+  +formFor(f, { url, method: 'delete', clss: 'mt-5', confirm: 'Are you sure you want to delete Task Status?' })
     +button(f, 'Delete Task Status', 'btn btn-danger')

@@ -6,6 +6,10 @@ mixin formFor(f, options = {})
   - const isStandart = _.includes(['get', 'post'], method);
   - const clss = _.get(options, 'clss');
   - if (clss) attributes.class = clss;
+  - const confirm = _.get(options, 'confirm');
+  - if (confirm) attributes['data-confirm'] = confirm;
+  - const remote = _.get(options, 'remote');
+  - if (remote) attributes['data-remote'] = remote;
   form(action= url method= isStandart ? method : 'post')&attributes(attributes)
     if !isStandart
       input(name='_method' type='hidden' value= method)

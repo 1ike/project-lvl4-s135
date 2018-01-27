@@ -13,7 +13,11 @@ block content
       each user in res.rows
         tr
           td= user.id
-          td= user.fullName
+          td
+            if isSignedIn() && currentUser.id === user.id
+              a(href=urlFor('user', user.id))= user.fullName
+            else
+              = user.fullName
           td= user.email
           td= user.createdAt
 

@@ -13,78 +13,68 @@ const authorizeForTask = async (ctx, next) => {
 };
 
 
-const createOrUpdateTask = async (ctx, router, needToCreate) => {
-  const { form } = ctx.request.body;
-  const { statusId, assignedToId, tagsList } = form;
-
-  let status;
-  if (statusId) {
-    status = await TaskStatus.findById(statusId);
-    ctx.assert(status, 422, 'No such Task Status');
-  }
-  let user;
-  if (assignedToId) {
-    user = await User.findById(assignedToId);
-    ctx.assert(user, 422, 'No such User');
-  }
-
-  const buildingForm = { ...form, creatorId: ctx.state.currentUser.id };
-  delete buildingForm.tagsList;
-  const task = needToCreate ? Task.build(buildingForm) : await Task.findById(ctx.params.id);
-  try {
-    if (needToCreate) {
-      await task.save();
-    } else {
-      await task.update(buildingForm);
-    }
-
-    const trimmedTags = tagsList.split(',')
-      .map((tag) => {
-        const trimmed = _.trim(tag);
-        return _.words(trimmed).join(' ');
-      })
-      .filter(_.identity);
-    if (trimmedTags.length) {
-      const addedTagsPromises = trimmedTags.map(async (tag) => {
-        const result = await Tag.findOne({
-          where: {
-            name: tag,
-          },
-        });
-        return result ? task.addTag(result) : task.createTag({ name: tag });
+const setTags = async (task, tagsList) => {
+  const trimmedTags = tagsList.split(',')
+    .map((tag) => {
+      const trimmed = _.trim(tag);
+      return _.words(trimmed).join(' ');
+    })
+    .filter(_.identity);
+  if (trimmedTags.length) {
+    const addedTagsPromises = trimmedTags.map(async (tag) => {
+      const result = await Tag.findOne({
+        where: {
+          name: tag,
+        },
       });
-      await Promise.all(addedTagsPromises);
-    }
-    if (!needToCreate) {
-      const previousTags = (await task.getTags()).map(tag => tag.name);
-      const oldTags = _.difference(previousTags, trimmedTags);
-      const removedTagsPromises = oldTags.map(async (tag) => {
-        const oldTag = await Tag.findOne({
-          where: {
-            name: tag,
-          },
-        });
-        const tasks = await oldTag.getTasks();
-        return tasks.length ? task.removeTag(oldTag) : oldTag.destroy();
-      });
-      await Promise.all(removedTagsPromises);
-    }
-
-    const msg = needToCreate ? 'created' : 'updated';
-    ctx.flash.set(`Task has been ${msg}`);
-    ctx.redirect(router.url('tasks'));
-  } catch (e) {
-    console.log(e);
-    const rollbackForm = {
-      ...form,
-      id: task.id,
-      statuses: await TaskStatus.findAll(),
-      users: await User.findAll(),
-    };
-    const template = needToCreate ? 'tasks/new' : 'tasks/task';
-    ctx.render(template, { f: buildFormObj(rollbackForm, e) });
+      return result ? task.addTag(result) : task.createTag({ name: tag });
+    });
+    await Promise.all(addedTagsPromises);
   }
+  return trimmedTags;
 };
+
+
+const cleanOldTags = async (task, trimmedTags) => {
+  const previousTags = (await task.getTags()).map(tag => tag.name);
+  const oldTags = _.difference(previousTags, trimmedTags);
+
+  const removedTagsPromises = oldTags.map(async (tag) => {
+    const oldTag = await Tag.findOne({
+      where: {
+        name: tag,
+      },
+    });
+    const tasks = await oldTag.getTasks();
+    return tasks.length ? task.removeTag(oldTag) : oldTag.destroy();
+  });
+
+  return Promise.all(removedTagsPromises);
+};
+
+
+const prepareForms = (ctx) => {
+  const { form } = ctx.request.body;
+  const { tagsList } = form;
+
+  const buildingForm = {
+    name: form.name,
+    description: form.description,
+    statusId: form.statusId,
+    assignedToId: form.assignedToId,
+    creatorId: ctx.state.currentUser.id,
+  };
+
+  return { form, buildingForm, tagsList };
+};
+
+
+const getRollbackForm = async (task, form) => ({
+  ...form,
+  id: task.id,
+  statuses: await TaskStatus.findAll(),
+  users: await User.findAll(),
+});
 
 
 const getAllTaskInfo = async (task) => {
@@ -103,8 +93,8 @@ export default (router) => {
     .get('tasks', '/tasks', async (ctx) => {
       const page = +ctx.query.page;
 
-      const LIMIT_BY_PAGE = 10;
-      const res = await Task.findWithPagination(ctx, page || 1, LIMIT_BY_PAGE);
+      const limitByPage = 10;
+      const res = await Task.findWithPagination(ctx, page || 1, limitByPage);
       const promises = res.rows.map(getAllTaskInfo);
       const rows = await Promise.all(promises);
 
@@ -115,7 +105,7 @@ export default (router) => {
     .get('newTask', '/tasks/new', authorizeForTask, async (ctx) => {
       const statuses = await TaskStatus.findAll();
       const statusNew = statuses.filter(status => status.name === 'new');
-      if (!statusNew.length) {
+      if (statusNew.length > 0) {
         ctx.flash.set('Task Status "new" must be created before creating Task');
         ctx.redirect(router.url('newTaskStatus'));
       }
@@ -152,10 +142,37 @@ export default (router) => {
       ctx.render('tasks/task', { f: buildFormObj(form) });
     })
     .post('newTask', '/tasks/new', auth, async (ctx) => {
-      await createOrUpdateTask(ctx, router, true);
+      const { form, buildingForm, tagsList } = prepareForms(ctx);
+
+      const task = Task.build(buildingForm);
+      try {
+        await task.save();
+
+        await setTags(task, tagsList);
+
+        ctx.flash.set('Task has been created');
+        ctx.redirect(router.url('tasks'));
+      } catch (e) {
+        const rollbackForm = getRollbackForm(task, form);
+        ctx.render('tasks/new', { f: buildFormObj(rollbackForm, e) });
+      }
     })
     .put('task', '/tasks/:id', authorizeForTask, async (ctx) => {
-      await createOrUpdateTask(ctx, router);
+      const { form, buildingForm, tagsList } = prepareForms(ctx);
+
+      const task = await Task.findById(ctx.params.id);
+      try {
+        await task.update(buildingForm);
+
+        const trimmedTags = await setTags(task, tagsList);
+        await cleanOldTags(task, trimmedTags);
+
+        ctx.flash.set('Task has been updated');
+        ctx.redirect(router.url('tasks'));
+      } catch (e) {
+        const rollbackForm = getRollbackForm(task, form);
+        ctx.render('tasks/task', { f: buildFormObj(rollbackForm, e) });
+      }
     })
     .delete('task', '/tasks/:id', authorizeForTask, async (ctx) => {
       const task = await Task.findById(ctx.params.id);
