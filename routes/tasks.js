@@ -105,19 +105,19 @@ export default (router) => {
     .get('newTask', '/tasks/new', auth, async (ctx) => {
       const statuses = await TaskStatus.findAll();
       const statusNew = statuses.filter(status => status.name === 'new');
-      if (statusNew.length > 0) {
+      if (statusNew.length === 0) {
         ctx.flash.set('Task Status "new" must be created before creating Task');
         ctx.redirect(router.url('newTaskStatus'));
+      } else {
+        const users = await User.findAll();
+
+        const task = {
+          statusIdDefault: statusNew[0].id,
+          statuses,
+          users,
+        };
+        ctx.render('tasks/new', { f: buildFormObj(task) });
       }
-
-      const users = await User.findAll();
-
-      const task = {
-        statusIdDefault: statusNew[0].id,
-        statuses,
-        users,
-      };
-      ctx.render('tasks/new', { f: buildFormObj(task) });
     })
     .get('task', '/tasks/:id', authorizeForTask, async (ctx) => {
       const task = await Task.findById(ctx.params.id);

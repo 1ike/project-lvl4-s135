@@ -17,18 +17,18 @@ block content
         tr
           td= item.task.id
           td
-            if isSignedIn() && currentUser.id == item.creator.id
+            if isSignedIn() && currentUser.id === item.creator && item.creator.id
               a(href=urlFor('task', item.task.id))= item.task.name
             else
               = item.task.name
           td= item.task.description
           td= item.status && item.status.name
-          td= `${item.creator.fullName}`
+          td= `${item.creator && item.creator.fullName}`
             |  &nbsp;
-            = `(id: ${item.creator.id})`
-          td= `${item.assignedTo.fullName}`
+            = `(id: ${item.creator && item.creator.id})`
+          td= `${item.assignedTo && item.assignedTo.fullName}`
             |  &nbsp;
-            = `(id: ${item.assignedTo.id})`
+            = `(id: ${item.assignedTo && item.assignedTo.id})`
           td= item.tags.map(i => i.name).join(', ')
 
   include /includes/pagination.pug
