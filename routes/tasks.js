@@ -8,7 +8,7 @@ import { Task, TaskStatus, User, Tag } from '../models';
 const authorizeForTask = async (ctx, next) => {
   ctx.assert(ctx.session.userId, 401, 'Only for registered users');
   const task = await Task.findById(ctx.params.id);
-  ctx.assert(ctx.session.userId = task.creatorId, 403, 'Only for Creators');
+  ctx.assert(ctx.session.userId === task.creatorId, 403, 'Only for Creators');
   return next();
 };
 
@@ -102,7 +102,7 @@ export default (router) => {
         res: { ...res, rows },
       });
     })
-    .get('newTask', '/tasks/new', authorizeForTask, async (ctx) => {
+    .get('newTask', '/tasks/new', auth, async (ctx) => {
       const statuses = await TaskStatus.findAll();
       const statusNew = statuses.filter(status => status.name === 'new');
       if (statusNew.length > 0) {
